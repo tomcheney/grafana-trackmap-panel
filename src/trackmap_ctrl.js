@@ -240,11 +240,10 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
         ).addTo(this.leafMap);
 
         if(this.lastPosMarker && this.coords.length) {
-            // this.lastPosMarker.bringToFront()
-            //     .setStyle({
-            //         fillColor: this.panel.pointColor,
-            //         color: 'white'}
-            //     );
+            this.lastPosMarker.setStyle({
+                    fillColor: this.panel.pointColor,
+                    color: 'white'}
+                );
 
             const lastIdx = this.coords.length - 1;
             this.lastPosMarker.setLatLng(this.coords[lastIdx].position);
