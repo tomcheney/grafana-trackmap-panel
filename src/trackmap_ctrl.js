@@ -239,7 +239,7 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
             }
         ).addTo(this.leafMap);
 
-        if(this.coords.length > 0) {
+        if(this.lastPosMarker && this.coords.length) {
             this.lastPosMarker.bringToFront()
                 .setStyle({
                     fillColor: this.panel.pointColor,
