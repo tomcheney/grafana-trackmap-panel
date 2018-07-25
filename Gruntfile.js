@@ -26,10 +26,22 @@ module.exports = (grunt) => {
         src: ['leaflet.js', 'leaflet.css', 'images'],
         dest: 'dist/leaflet'
       },
+      leafletRotatedMarker: {
+          cwd: 'node_modules/leaflet-rotatedmarker/',
+          expand: true,
+          src: ['leaflet.rotatedMarker.js'],
+          dest: 'dist/leaflet'
+      },
       leaflet_img: {
         cwd: 'node_modules/leaflet/dist/images',
         expand: true,
-        src: '*',
+        src: ['layers-2x.png', 'layers.png'],
+        dest: 'dist/leaflet/images/'
+      },
+      custom_img: {
+        cwd: 'src/img',
+        expand: true,
+        src: ['marker-icon.png', 'marker-icon-2x.png', 'marker-shadow.png'],
         dest: 'dist/leaflet/images/'
       }
     },

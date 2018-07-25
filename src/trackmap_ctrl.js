@@ -6,6 +6,7 @@ import {MetricsPanelCtrl} from 'app/plugins/sdk';
 
 import './leaflet/leaflet.css!';
 import './module.css!';
+import './leaflet/leaflet.rotatedMarker.js';
 
 const panelDefaults = {
     maxDataPoints: 500,
@@ -21,6 +22,7 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
 
         this.timeSrv = $injector.get('timeSrv');
         this.coords = [];
+        this.headings = [];
         this.leafMap = null;
         this.polyline = null;
         this.lastPosMarker = null;
@@ -235,18 +237,17 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
 
         if(this.coords.length) {
             // Last pos marker
-            this.lastPosMarker = L.circleMarker(L.latLng(0, 0), {
-                color: 'none',
-                fillColor: 'none',
-                fillOpacity: 1,
-                weight: 2,
-                radius: 7
-            }).addTo(this.leafMap);
+            let angle = 0;
+            if(this.headings.length > 0) {
+                const lastHdgIdx = this.headings.length - 1;
+                angle = this.headings[lastHdgIdx].heading;
+            }
+            console.log('Angle: ' + angle);
 
-            this.lastPosMarker.setStyle({
-                    fillColor: this.panel.pointColor,
-                    color: 'white'}
-                );
+            this.lastPosMarker = L.marker(L.latLng(0, 0), {
+                rotationAngle: angle,
+                shadowUrl: null
+            }).addTo(this.leafMap);
 
             const lastIdx = this.coords.length - 1;
             this.lastPosMarker.setLatLng(this.coords[lastIdx].position);
@@ -275,19 +276,12 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
                 color: this.panel.lineColor
             });
         }
-
-        if (this.lastPosMarker) {
-            this.lastPosMarker.setStyle({
-                fillColor: this.panel.pointColor,
-                color: 'white'
-            });
-        }
     }
 
     onDataReceived(data) {
         this.setupMap();
 
-        if (data.length === 0 || data.length !== 2) {
+        if (data.length < 2) {
             // No data or incorrect data, show a world map and abort
             this.leafMap.setView([0, 0], 1);
             return;
@@ -308,6 +302,21 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
                 position: L.latLng(lats[i][0], lons[i][0]),
                 timestamp: lats[i][1]
             });
+        }
+
+        this.headings.length = 0;
+        if (data.length === 3) {
+            const headings = data[2].datapoints;
+            for (let i = 0; i < headings.length; i++) {
+                if(headings[i][0] ==null) {
+                    continue;
+                }
+
+                this.headings.push({
+                    heading: headings[i][0],
+                    timestamp: headings[i][1]
+                });
+            }
         }
         this.addDataToMap();
     }
