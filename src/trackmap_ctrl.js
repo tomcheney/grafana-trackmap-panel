@@ -1,4 +1,5 @@
 import L from './leaflet/leaflet.js';
+import 'leaflet-providers';
 import moment from 'moment';
 
 import appEvents from 'app/core/app_events';
@@ -123,33 +124,52 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
       zoomDelta: 1,
     });
 
-    // Define layers and add them to the control widget
-    L.control.layers({
-      'OpenSeaMap': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        forcedOverlay: L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',{
-          attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors',
-          maxZoom: 19,
-        })
-      }).addTo(this.leafMap), // Add default layer to map
-      'OpenStreetMap': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-          maxZoom: 19
-      }).addTo(this.leafMap), // Add default layer to map
-      'OpenTopoMap': L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-        attribution: 'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
-        maxZoom: 17
-      }),
-      'Satellite': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: 'Imagery &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-        // This map doesn't have labels so we force a label-only layer on top of it
-        forcedOverlay: L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/toner-labels/{z}/{x}/{y}.png', {
-          attribution: 'Labels by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-          subdomains: 'abcd',
-          maxZoom: 20,
-        })
-      })
-    }).addTo(this.leafMap);
+    let defaultLayer = L.tileLayer.provider('OpenStreetMap.Mapnik').addTo(map);
+
+    let baseLayers = {
+        'OpenStreetMap Default': defaultLayer,
+        'OpenStreetMap German Style': L.tileLayer.provider('OpenStreetMap.DE'),
+        'OpenStreetMap Black and White': L.tileLayer.provider('OpenStreetMap.BlackAndWhite'),
+        'OpenStreetMap H.O.T.': L.tileLayer.provider('OpenStreetMap.HOT'),
+        'Thunderforest OpenCycleMap': L.tileLayer.provider('Thunderforest.OpenCycleMap'),
+        'Thunderforest Transport': L.tileLayer.provider('Thunderforest.Transport'),
+        'Thunderforest Landscape': L.tileLayer.provider('Thunderforest.Landscape'),
+        'Hydda Full': L.tileLayer.provider('Hydda.Full'),
+        'Stamen Toner': L.tileLayer.provider('Stamen.Toner'),
+        'Stamen Terrain': L.tileLayer.provider('Stamen.Terrain'),
+        'Stamen Watercolor': L.tileLayer.provider('Stamen.Watercolor'),
+        'Esri WorldStreetMap': L.tileLayer.provider('Esri.WorldStreetMap'),
+        'Esri DeLorme': L.tileLayer.provider('Esri.DeLorme'),
+        'Esri WorldTopoMap': L.tileLayer.provider('Esri.WorldTopoMap'),
+        'Esri WorldImagery': L.tileLayer.provider('Esri.WorldImagery'),
+        'Esri WorldTerrain': L.tileLayer.provider('Esri.WorldTerrain'),
+        'Esri WorldShadedRelief': L.tileLayer.provider('Esri.WorldShadedRelief'),
+        'Esri WorldPhysical': L.tileLayer.provider('Esri.WorldPhysical'),
+        'Esri OceanBasemap': L.tileLayer.provider('Esri.OceanBasemap'),
+        'Esri NatGeoWorldMap': L.tileLayer.provider('Esri.NatGeoWorldMap'),
+        'Esri WorldGrayCanvas': L.tileLayer.provider('Esri.WorldGrayCanvas'),
+        'Geoportail France Maps': L.tileLayer.provider('GeoportailFrance'),
+        'Geoportail France Orthos': L.tileLayer.provider('GeoportailFrance.orthos'),
+        'Geoportail France classic maps': L.tileLayer.provider('GeoportailFrance.ignMaps')
+    };
+
+    let overlayLayers = {
+        'OpenSeaMap': L.tileLayer.provider('OpenSeaMap'),
+        'OpenWeatherMap Clouds': L.tileLayer.provider('OpenWeatherMap.Clouds'),
+        'OpenWeatherMap CloudsClassic': L.tileLayer.provider('OpenWeatherMap.CloudsClassic'),
+        'OpenWeatherMap Precipitation': L.tileLayer.provider('OpenWeatherMap.Precipitation'),
+        'OpenWeatherMap PrecipitationClassic': L.tileLayer.provider('OpenWeatherMap.PrecipitationClassic'),
+        'OpenWeatherMap Rain': L.tileLayer.provider('OpenWeatherMap.Rain'),
+        'OpenWeatherMap RainClassic': L.tileLayer.provider('OpenWeatherMap.RainClassic'),
+        'OpenWeatherMap Pressure': L.tileLayer.provider('OpenWeatherMap.Pressure'),
+        'OpenWeatherMap PressureContour': L.tileLayer.provider('OpenWeatherMap.PressureContour'),
+        'OpenWeatherMap Wind': L.tileLayer.provider('OpenWeatherMap.Wind'),
+        'OpenWeatherMap Temperature': L.tileLayer.provider('OpenWeatherMap.Temperature'),
+        'OpenWeatherMap Snow': L.tileLayer.provider('OpenWeatherMap.Snow'),
+        'Geoportail France Parcels': L.tileLayer.provider('GeoportailFrance.parcels')
+    };
+
+    L.control.layers(baseLayers, overlayLayers, {collapsed: false}).addTo(this.leafMap);
 
     // Dummy hovermarker
     this.hoverMarker = L.circleMarker(L.latLng(0, 0), {
