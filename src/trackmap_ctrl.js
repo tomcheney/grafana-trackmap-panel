@@ -226,7 +226,7 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
           color: 'white'}
       );
 
-      const lastIdx = this.coords.length;
+      const lastIdx = this.coords.length - 1;
       this.lastPosMarker.setLatLng(this.coords[lastIdx].position);
     }
     else {
