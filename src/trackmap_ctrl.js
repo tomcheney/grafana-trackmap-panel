@@ -54,57 +54,78 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
 
         // check if we are already showing the correct hoverMarker
         let target = Math.floor(evt.pos.x);
-        if (this.hoverTarget && this.hoverTarget === target) {
-            return;
-        }
+        // if (this.hoverTarget && this.hoverTarget === target) {
+        //     return;
+        // }
 
         // check for initial show of the marker
         if (this.hoverTarget == null){
-            this.hoverMarker.bringToFront()
-                .setStyle({
-                    fillColor: this.panel.pointColor,
-                    color: 'white'
-                });
+            this.hoverMarker.setOpacity(0.5);
         }
 
         this.hoverTarget = target;
 
-        // Find the currently selected time and move the hoverMarker to it
-        // Note that an exact match isn't always going to work due to rounding so
-        // we clean that up later (still more efficient)
-        let min = 0;
-        let max = this.coords.length - 1;
-        let idx = null;
-        let exact = false;
-        while (min <= max) {
-            idx = Math.floor((max + min) / 2);
-            if (this.coords[idx].timestamp === this.hoverTarget) {
-                exact = true;
-                break;
+        {
+            // Find the currently selected time and move the hoverMarker to it
+            // Note that an exact match isn't always going to work due to rounding so
+            // we clean that up later (still more efficient)
+            let min = 0;
+            let max = this.coords.length - 1;
+            let idx = null;
+            let exact = false;
+            while (min <= max) {
+                idx = Math.floor((max + min) / 2);
+                if (this.coords[idx].timestamp === this.hoverTarget) {
+                    exact = true;
+                    break;
+                }
+                else if (this.coords[idx].timestamp < this.hoverTarget) {
+                    min = idx + 1;
+                }
+                else {
+                    max = idx - 1;
+                }
             }
-            else if (this.coords[idx].timestamp < this.hoverTarget) {
-                min = idx + 1;
+
+            // Correct the case where we are +1 index off
+            if (!exact && idx > 0 && this.coords[idx].timestamp > this.hoverTarget) {
+                idx--;
             }
-            else {
-                max = idx - 1;
-            }
+            this.hoverMarker.setLatLng(this.coords[idx].position);
         }
 
-        // Correct the case where we are +1 index off
-        if (!exact && idx > 0 && this.coords[idx].timestamp > this.hoverTarget) {
-            idx--;
+        {
+            let minH = 0;
+            let maxH = this.headings.length - 1;
+            let idxH = null;
+            let exactH = false;
+            while (minH <= maxH) {
+                idxH = Math.floor((maxH + minH) / 2);
+                if (this.headings[idxH].timestamp === this.hoverTarget) {
+                    exactH = true;
+                    break;
+                }
+                else if (this.headings[idxH].timestamp < this.hoverTarget) {
+                    minH = idxH + 1;
+                }
+                else {
+                    maxH = idxH - 1;
+                }
+            }
+
+            // Correct the case where we are +1 index off
+            if (!exactH && idxH > 0 && this.headings[idxH].timestamp > this.hoverTarget) {
+                idxH--;
+            }
+            this.hoverMarker.setRotationAngle(this.headings[idxH].heading)
         }
-        this.hoverMarker.setLatLng(this.coords[idx].position);
     }
 
     onPanelClear(evt) {
         // clear the highlighted circle
         this.hoverTarget = null;
         if (this.hoverMarker) {
-            this.hoverMarker.setStyle({
-                fillColor: 'none',
-                color: 'none'
-            });
+            this.hoverMarker.setOpacity(0);
         }
     }
 
@@ -174,12 +195,8 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
         }).addTo(this.leafMap);
 
         // Dummy hovermarker
-        this.hoverMarker = L.circleMarker(L.latLng(0, 0), {
-            color: 'none',
-            fillColor: 'none',
-            fillOpacity: 1,
-            weight: 2,
-            radius: 7
+        this.hoverMarker = L.marker(L.latLng(0, 0), {
+            rotationAngle: 0
         }).addTo(this.leafMap);
 
         // Events
@@ -251,14 +268,6 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
 
             const lastIdx = this.coords.length - 1;
             this.lastPosMarker.setLatLng(this.coords[lastIdx].position);
-        }
-        else {
-            if (this.lastPosMarker) {
-                this.lastPosMarker.setStyle({
-                    fillColor: 'none',
-                    color: 'none'
-                });
-            }
         }
 
         this.zoomToFit();
