@@ -140,14 +140,14 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
                     maxZoom: 19,
                 })
             }),
-            'Watercolor': L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/{variant}/{z}/{x}/{y}.{ext}', {
+            'Watercolor': L.tileLayer('http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg', {
                 variant: 'watercolor',
                 forcedOverlay: L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',{
                     attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors',
                     maxZoom: 19,
                 })
             }),
-            'Terrain': L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/{variant}/{z}/{x}/{y}.{ext}', {
+            'Terrain': L.tileLayer('http://tile.stamen.com/terrain/{z}/{x}/{y}.jpg', {
                 variant: 'terrain',
                 forcedOverlay: L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',{
                     attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors',
