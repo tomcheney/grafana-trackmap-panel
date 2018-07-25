@@ -1,5 +1,4 @@
 import L from './leaflet/leaflet.js';
-import 'leaflet-providers';
 import moment from 'moment';
 
 import appEvents from 'app/core/app_events';
