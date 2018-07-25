@@ -112,6 +112,9 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
             if (this.polyline) {
                 this.polyline.removeFrom(this.leafMap);
             }
+            if (this.lastPosMarker) {
+                this.lastPosMarker.removeFrom(this.leafMap);
+            }
             this.onPanelClear();
             return;
         }
@@ -177,15 +180,6 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
             radius: 7
         }).addTo(this.leafMap);
 
-        // Last pos marker
-        this.lastPosMarker = L.circleMarker(L.latLng(0, 0), {
-            color: 'none',
-            fillColor: 'none',
-            fillOpacity: 1,
-            weight: 2,
-            radius: 7
-        }).addTo(this.leafMap);
-
         // Events
         this.leafMap.on('baselayerchange', this.mapBaseLayerChange.bind(this));
         this.leafMap.on('boxzoomend', this.mapZoomToBox.bind(this));
@@ -239,9 +233,17 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
             }
         ).addTo(this.leafMap);
 
-        if(this.lastPosMarker != null && this.coords.length) {
-            this.lastPosMarker.bringToFront()
-                .setStyle({
+        if(this.coords.length) {
+            // Last pos marker
+            this.lastPosMarker = L.circleMarker(L.latLng(0, 0), {
+                color: 'none',
+                fillColor: 'none',
+                fillOpacity: 1,
+                weight: 2,
+                radius: 7
+            }).addTo(this.leafMap);
+
+            this.lastPosMarker.setStyle({
                     fillColor: this.panel.pointColor,
                     color: 'white'}
                 );
@@ -271,6 +273,13 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
         if (this.polyline) {
             this.polyline.setStyle({
                 color: this.panel.lineColor
+            });
+        }
+
+        if (this.lastPosMarker) {
+            this.lastPosMarker.setStyle({
+                fillColor: this.panel.pointColor,
+                color: 'white'
             });
         }
     }
