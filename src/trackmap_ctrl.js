@@ -12,7 +12,7 @@ const panelDefaults = {
   autoZoom: true,
   lineColor: 'red',
   pointColor: 'royalblue',
-}
+};
 
 export class TrackMapCtrl extends MetricsPanelCtrl {
   constructor($scope, $injector) {
@@ -23,6 +23,7 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
     this.coords = [];
     this.leafMap = null;
     this.polyline = null;
+    this.lastPosMarker = null;
     this.hoverMarker = null;
     this.hoverTarget = null;
 
@@ -152,6 +153,15 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
       radius: 7
     }).addTo(this.leafMap);
 
+      // Last pos marker
+      this.lastPosMarker = L.circleMarker(L.latLng(0, 0), {
+          color: 'none',
+          fillColor: 'none',
+          fillOpacity: 1,
+          weight: 2,
+          radius: 7
+      }).addTo(this.leafMap);
+
     // Events
     this.leafMap.on('baselayerchange', this.mapBaseLayerChange.bind(this));
     this.leafMap.on('boxzoomend', this.mapZoomToBox.bind(this));
@@ -204,6 +214,25 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
         weight: 3,
       }
     ).addTo(this.leafMap);
+
+    if(this.coords.length > 0) {
+      this.lastPosMarker.bringToFront()
+        .setStyle({
+          fillColor: this.panel.pointColor,
+          color: 'white'}
+      );
+
+      const lastIdx = this.coords.length;
+      this.lastPosMarker.setLatLng(this.coords[lastIdx].position);
+    }
+    else {
+      if (this.lastPosMarker) {
+        this.lastPosMarker.setStyle({
+          fillColor: 'none',
+          color: 'none'
+        });
+      }
+    }
 
     this.zoomToFit();
   }
