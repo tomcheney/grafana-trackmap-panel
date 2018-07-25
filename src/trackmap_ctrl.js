@@ -157,14 +157,14 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
       radius: 7
     }).addTo(this.leafMap);
 
-      // Last pos marker
-      this.lastPosMarker = L.circleMarker(L.latLng(0, 0), {
-          color: 'none',
-          fillColor: 'none',
-          fillOpacity: 1,
-          weight: 2,
-          radius: 7
-      }).addTo(this.leafMap);
+    // Last pos marker
+    this.lastPosMarker = L.circleMarker(L.latLng(0, 0), {
+        color: 'none',
+        fillColor: 'none',
+        fillOpacity: 1,
+        weight: 2,
+        radius: 7
+    }).addTo(this.leafMap);
 
     // Events
     this.leafMap.on('baselayerchange', this.mapBaseLayerChange.bind(this));
