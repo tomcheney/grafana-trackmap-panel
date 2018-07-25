@@ -126,19 +126,36 @@ export class TrackMapCtrl extends MetricsPanelCtrl {
         // Define layers and add them to the control widget
         L.control.layers({
             'OpenSeaMap': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
                 forcedOverlay: L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',{
                     attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors',
                     maxZoom: 19,
                 })
-            }).addTo(this.leafMap), // Add default layer to map
-            'OpenStreetMap': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-                maxZoom: 19
-            }).addTo(this.leafMap), // Add default layer to map
+            }).addTo(this.leafMap),
+            'Black and White': L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
+                forcedOverlay: L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',{
+                    attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors',
+                    maxZoom: 19,
+                })
+            }),
+            'Watercolor': L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/{variant}/{z}/{x}/{y}.{ext}', {
+                variant: 'watercolor',
+                forcedOverlay: L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',{
+                    attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors',
+                    maxZoom: 19,
+                })
+            }),
+            'Terrain': L.tileLayer('https://stamen-tiles-{s}.a.ssl.fastly.net/{variant}/{z}/{x}/{y}.{ext}', {
+                variant: 'terrain',
+                forcedOverlay: L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',{
+                    attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors',
+                    maxZoom: 19,
+                })
+            }),
             'OpenTopoMap': L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-                attribution: 'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
-                maxZoom: 17
+                forcedOverlay: L.tileLayer('https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png',{
+                    attribution: 'Map data: &copy; <a href="http://www.openseamap.org">OpenSeaMap</a> contributors',
+                    maxZoom: 19,
+                })
             }),
             'Satellite': L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
                 attribution: 'Imagery &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
